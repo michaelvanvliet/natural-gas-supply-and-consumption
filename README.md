@@ -3,4 +3,5 @@ A Jupyter notebook where I show how to access open data on Natural gas; supply a
 
 
 ## Play with the notebook on MyBinder!
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/michaelvanvliet/natural-gas-supply-and-consumption/HEAD?labpath=analyse.ipynb)
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/michaelvanvliet/natural-gas-supply-and-consumption/HEAD?urlpath=notebooks/analyse.ipynb)
