@@ -13,7 +13,7 @@ import json
 odata_index_url = "https://opendata.cbs.nl/ODataApi/odata/00372eng"
 
 # sns
-sns.set(rc={"figure.figsize": (12, 9)})
+sns.set(rc={"figure.figsize": (15, 5)})
 
 #%%
 ##############################################################################
@@ -90,7 +90,7 @@ df["in"] = df["import"] + df["production"]
 df["out"] = df["export"] + df["consumption"]
 
 # filter data to be limit to this century
-# df = df[df['Year'] >= 1995]
+# df = df[df['Year'] >= 1996]
 
 #%% analyse data
 
@@ -106,14 +106,14 @@ gas_volume_units = data_dictionary["IndigenousProduction_2"]["Unit"]
 
 # Natural gas production by year
 g = sns.relplot(
-    data=df[df["IndigenousProduction_2"] >= 0],
+    data=df.query("IndigenousProduction_2 >= 0 and Year >= 1996"),
     x="MonthLabel",
     y="IndigenousProduction_2",
     col="Year",
     kind="line",
     linewidth=4,
     zorder=5,
-    col_wrap=4,
+    col_wrap=3,
     height=2,
     aspect=2.2,
     legend=True,
@@ -173,6 +173,7 @@ import_export_state_df = pd.melt(  # set data
         "ImportsOfLiquefiedNaturalGasLng_5",
         "ExportsOfGaseousNaturalGas_6",
         "ExportsOfLiquefiedNaturalGasLng_7",
+        "Bunkers_8"
     ],
 )
 
@@ -197,6 +198,9 @@ ie.legend(
 plt.ylabel(gas_volume_units)
 plt.title("Import vs. Export of natural gas (by state of matter)")
 plt.show()
+
+for l in labels:
+    print(f"{data_dictionary[l]['Title']}: {data_dictionary[l]['Description']}")
 
 # %%
 ##############################################################################
@@ -240,4 +244,47 @@ plt.ylim(0, in_out_df["value"].max())
 plt.ylabel(gas_volume_units)
 plt.title("Production + Import vs. Consumption + Export of natural gas")
 plt.show()
+
+# %%
+
+# %%
+##############################################################################
+# stock
+
+stock_df = pd.melt(  # set data
+    df.query("Year >= 2000"),
+    id_vars=["Date"],
+    value_vars=[
+        "StockChange_9"
+    ],
+)
+
+# Stock in the Netherlands
+stock = sns.lineplot(  # plot
+    x="Date",
+    y="value",
+    hue="variable",
+    style="variable",
+    markers=True,
+    data=stock_df,
+)
+
+# add line of current value
+current_stock = stock_df.iloc[-1]['value']
+stock.axhline(current_stock, color="red")
+
+# layout
+handles, labels = stock.get_legend_handles_labels()
+stock.legend(
+    handles,
+    [data_dictionary[l]["Title"] for l in labels],
+    loc="upper left"
+)
+
+plt.ylabel(gas_volume_units)
+plt.title("Stock")
+plt.show()
+
+for l in labels:
+    print(f"{data_dictionary[l]['Title']}: {data_dictionary[l]['Description']}")
 # %%
